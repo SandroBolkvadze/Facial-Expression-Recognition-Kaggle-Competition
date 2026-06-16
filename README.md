@@ -21,7 +21,7 @@ Facial-Expression-Recognition-Kaggle-Competition/
 ├── facial-expression-recognition-02.ipynb     ← preprocessing, ექსპერიმენტები MultiLayerFC-ზე
 ├── facial-expression-recognition-03.ipynb     ← preprocessing, ექსპერიმენტები SimpleCNN-ზე
 ├── facial-expression-recognition-04.ipynb     ← preprocessing, ექსპერიმენტები DeepCNN-ზე
-├── facial-expression-recognition-04.ipynb     ← preprocessing, ექსპერიმენტები DeepResCNN-ზე
+├── facial-expression-recognition-05.ipynb     ← preprocessing, ექსპერიმენტები DeepResCNN-ზე
 ├── README.md
 ```
 
@@ -29,7 +29,34 @@ Facial-Expression-Recognition-Kaggle-Competition/
 
 # Data Preprocessing
 
+პრეპროცესინგი საკმაოდ მარტივი გამოვიდა. 
 
+* სანამ დატას დავყოფდი train/val/test ნაწილებად, ჯერ ვნახე კლასების (0, 1, 2, 3, 4, 6) განაწილება. რადგან განაწილება დაუბალანსებელი იყო, გადავწყვიტე stratify option გამომეყენებინა დაყოფის დროს, რათა სამივე ნაწილში თანაბარი ფარდობით ყოფილიყო დატა და არ მომხდარიყო ისე, რომ მაგალითად train-ში გაბრაზებული სახე საერთოდ არ მოხვედრილიყო.
+
+* კეგლზე submission რადგან არ შემეძლო ავიღე train დატა მთლიანად და დავყავი სამ 70/15/15 სატრენინგო, ვალიდაციის, სატესტო ნაწილებად. აქვე დავრწმუნდი, რომ დაყოფის შემდეგ კლასების განაწილებების თანაფარდობა თანაბარი იყო:
+          y_train     y_val    y_test
+emotion                              
+3        0.251294  0.251277  0.251451
+6        0.172920  0.173014  0.172974
+4        0.168242  0.168137  0.168331
+2        0.142715  0.142592  0.142791
+0        0.139182  0.139108  0.139076
+5        0.110470  0.110543  0.110286
+1        0.015177  0.015327  0.015092
+```
+
+
+* ამის შემდეგ დავწერე transformer, რომელიც 255-ზე გაყოფს ყველა პიქსელს და ამის შემდეგ შესულ პიქსელებს გამოაკლებს (ტრენინგის პიქსელების საშუალო / 255)-ს:
+```python
+    # Calculate mean pixel over whole train dataset
+    mean_pixel = X_train['pixels'].apply(np.mean).mean() / 255.0
+
+    # Transform 2d numpy pixel array
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(mean_pixel,), std=(1.0,)),
+    ])
+```
 
 ---
 
