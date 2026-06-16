@@ -17,9 +17,10 @@
 ```
 Facial-Expression-Recognition-Kaggle-Competition/
 │
-├── facial-expression-recognition-01.ipynb     ← preprocessing, ექსპერიმენტები MLP-ზე
-├── facial-expression-recognition-02.ipynb     ← preprocessing, ექსპერიმენტები MLP-ზე
-├── facial-expression-recognition-03.ipynb     ← preprocessing, ექსპერიმენტები CNN-ზე
+├── facial-expression-recognition-01.ipynb     ← preprocessing, ექსპერიმენტები TwoLayerFC-ზე
+├── facial-expression-recognition-02.ipynb     ← preprocessing, ექსპერიმენტები MultiLayerFC-ზე
+├── facial-expression-recognition-03.ipynb     ← preprocessing, ექსპერიმენტები SimpleCNN-ზე
+├── facial-expression-recognition-04.ipynb     ← preprocessing, ექსპერიმენტები DeepCNN-ზე
 ├── README.md
 ```
 
@@ -289,6 +290,8 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 # CNN
 
 
+## SimpleCNN
+
 * დავიწყე მარტივი CNN-ის დატრენინგებით. ავიღე ორი ცალი Convolutional Layer-ით:
 
 ```python
@@ -329,6 +332,18 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 - SimpleCNN__conv_64-128__fc_256__BN__noDrop__bs_64__Adam_lr_5e-05_wd_0 -ის შედეგია (`epoch: 10`, `train_loss: 0.9130`; `train_acc: 0.6839`; `val_loss: 1.2774`; `val_acc: 0.5309`).
 
 ბევრად უკეთესია შედეგია, ვიდრე MLP-ები. აქაც ჩანს, რომ CNN-ის Conv Layer-ები უფრო მარტივად პოულობენ კარგ feature-ებს შემოსულ სურათზე. მეორემ ასეთი შედეგი დადო: (`epoch: 6`, `train_loss: 1.0687`; `train_acc: 0.6051`; `val_loss: 1.2882`; `val_acc: 0.5160`). არც ეს არის ცუდი შედეგი, მაგრამ წინა ჯობდა. 
+
+
+* რადგან **overfitting**-ის პრობლემა მუდმივად არის (განსაკუთრებით დიდი capacity-ს მქონე მოდელში) დავამატე Dropout layer. ჯერ dropout layer -ის დამატება მოვცადე მხოლოდ MLP layer-ში და ასეთი შედეგები მივიღე:
+
+![alt text](./images/cnn_dropout_vs_no_dropout.png)
+
+
+
+
+
+## DeepCNN
+
 
 
 
