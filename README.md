@@ -401,22 +401,46 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 
 ## DeepResCNN
 
+* როცა ნეირონული ქსელები დიდი სიღრმის ხდება, *vanishing gradient*-ის შანსი ბევრად უფრო დიდია, რადგან გრადიენტი ყველა ლეიერის გავლისას რაღაც რიცხვზე მრავლდება. თუ ეს რიცხვი ხშირად 1-ზე ნაკლებია, მაშინ დიდი ალბათობით *vanishing gradient*-ის პრობლემა გვაქვს. Residual კავშირები ამ პრობლემას აგვარებს. ანუ, იმის ნაცვლად, რომ მოდელმა input x-სთვის ისწავლოს სრულიად ახალი გარდაქმნა F(x) რაღაც ლეიერში გატარებისას, მოდელი სწავლობს როგორ შეცვალოს არსებული x, ანუ delta F(x)-ს. შედეგად, გრადიენტი resnet-ის skip connection-ებში თავისუფლად გაივლის და უკანა პირველი ლეიერები მალევე მიიღებენ Loss ფუნქციის სიგნალს იმის მიუხედავად, გზაში რაიმე layer saturated გახდა, თუ არა (თუ ამ ლეიერზე skip connection არის).
+
+DeepResCNN-ის მთავარი კომპონენტია ეს ბლოკი, დანარჩენი ანალოგიურია DeepCNN არქიტექტურის, რომელიც წინაზე ავაგეთ:
+
+```python
+class ResBlock(nn.Module):
+    def __init__(self, channels):
+        super().__init__()
+        
+        self.block = nn.Sequential(
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(channels),
+        )
+
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        return self.relu(x + self.block(x)) 
+```
+
+* აქ მთავარია forward-ის ეს ნაწილი, სადაც x ემატება გარდაქმნილ x-ს: `return self.relu(x + self.block(x))`. ეს უზრუნველყოფს იმას, რომ backprop-ის დროს skip connection-ში gradient პირდაპირ გაივლის. 
 
 
+* რეზნეტის ტრენინგს ყველაზე დიდი ხანი მოუნდა და ასეთი შედეგი დადო:
+
+![alt text](resnet.png)
+
+
+* `val_acc=62%` საკმაოდ კარგი შედეგია და ყველა წინა მოდელს აჯობა.
 
 ---
 
-# Tests
+# Test
 
+დატას დარჩენილ 15%-ზე (სატესტო) გადავწყვიტე გამეტესტა წინა საუკეთესო მოდელები. საუკეთესო შედეგი დადო `DeepResCNN`-მა:
 
-
-
-
-
-
-
-
-
+- `DeepResCNN`: `Loss: 1.0381991679177565`; `acc: 61.597399582075695%`.
 
 
 ## MLflow ექსპერიმენტები DagsHub-ზე
