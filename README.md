@@ -336,10 +336,7 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 
 * რადგან **overfitting**-ის პრობლემა მუდმივად არის (განსაკუთრებით დიდი capacity-ს მქონე მოდელში) დავამატე Dropout layer. ჯერ dropout layer -ის დამატება მოვცადე მხოლოდ MLP layer-ში და ასეთი შედეგები მივიღე:
 
-![alt text](./images/cnn_dropout_vs_no_dropout.png)
-
-
-
+![alt text](./images/cnn_dropout_vs_nodropout.png)
 
 
 ## DeepCNN
