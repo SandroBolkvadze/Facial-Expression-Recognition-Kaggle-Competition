@@ -21,8 +21,15 @@ Facial-Expression-Recognition-Kaggle-Competition/
 ├── facial-expression-recognition-02.ipynb     ← preprocessing, ექსპერიმენტები MultiLayerFC-ზე
 ├── facial-expression-recognition-03.ipynb     ← preprocessing, ექსპერიმენტები SimpleCNN-ზე
 ├── facial-expression-recognition-04.ipynb     ← preprocessing, ექსპერიმენტები DeepCNN-ზე
+├── facial-expression-recognition-04.ipynb     ← preprocessing, ექსპერიმენტები DeepResCNN-ზე
 ├── README.md
 ```
+
+
+
+# Data Preprocessing
+
+
 
 ---
 
@@ -389,6 +396,22 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 ![alt text](./images/deepcnn.png)
 
 ანუ მართალი ყოფილა ის ფაქტი, რომ scaling შველის. თითქმის 60% გახდა ვალიდაციის accuracy უბრალოდ იმის ხარჯზე, რომ layer-ების რაოდენობა გავზარდეთ ჩვენს მოდელში, დამატებით ისეთი არაფერი. რადგან Conv Layer-ებისდ დამატებამ უშველა, ვიფიქრე, MLP ნაწილსაც გავართულებ და დავამატებ კიდევ ერთ ლეიერს-თქო, მაგრამ ოდნავ გაუარესდა შედეგი: `val_acc=0.59754`-ზე ჩამოვარდა. 
+
+---
+
+## DeepResCNN
+
+
+
+
+---
+
+# Tests
+
+
+
+
+
 
 
 
