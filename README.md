@@ -460,7 +460,7 @@ class ResBlock(nn.Module):
 
 * რეზნეტის ტრენინგს ყველაზე დიდი ხანი მოუნდა და ასეთი შედეგი დადო:
 
-![alt text](resnet.png)
+![alt text](./images/resnet.png)
 
 
 * `val_acc=62%` საკმაოდ კარგი შედეგია და ყველა წინა მოდელს აჯობა.
