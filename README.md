@@ -340,17 +340,55 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 
 `dropout_p = 0.5`-მა აშკარად უკეთესი შედეგი მოგვცა და ოდნავ გაუმჯობესდა ჩვენი მოდელის performace ვალიდაციაზე.
 
+რადგან dropout-მა კარგად იმუშავა MLP layer-ში გადავწყვიტე დამემატებინა Conv Layer-ებშიც. `dropout2d_p=0.25` ავირჩიე Conv layer-ების dropout-ის ჰიპერპარამეტრად. ამანაც გააუმჯობესა შედეგი:
+
+![alt text](./images/add_dropout2d.png)
+
+ამის შემდეგ გადავწყვიტე ოდნავ გამეზარდა MLP layer-ის კომპლექსურობა და მენახა რა შედეგი მოყვებოდა მაგას:
+```python
+    self.mlp = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(128 * 12 * 12, 256), nn.ReLU(), nn.Dropout(.5),
+        nn.Linear(256, 256), nn.ReLU(), nn.Dropout(.5),
+        nn.Linear(256, num_classes),
+    )
+```
+ანუ კიდევ ერთი წრფივი ლეიერი დავამატე თავის აქტივაციით და ა.შ. ასეთი შედეგი დამისვა:
+
+![alt text](./images/add_capacity_to_mlp.png)
+
+აქაც გაგვიუმჯობესდა ვალიდაციაზე პერფორმანსი.
 
 
-
-
-
+ამის შემდეგ კიდევ რამდენიმე ჰიპერპარამეტრის ცვლილება, მაგრამ შედეგი არ გამოიმჯობესდა. გადავწყვიტე, რომ არქიტექტურის scaling გამეკეთებინა. ხშირად გამიგია ML-ში scaling კარგად მუშაობსო და ვცადე ბევრი Conv Layer-ის დამატება და ამ არქიტექტურას დავარქვი `DeepCNN`. 
 
 ## DeepCNN
 
+* რადგან scaling-ს ვაკეთებთ, უფრო მეტი Conv Layer დავამატე ჩვენს `SimpleCNN` არქიტექტურას და გამოვიდა `DeepCNN` არქიტექტურა:
 
+```python
+    self.conv = nn.Sequential(
+        nn.Conv2d(1, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
+        nn.Conv2d(64, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
+        nn.MaxPool2d(2), nn.Dropout2d(0.25),
 
+        nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+        nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+        nn.MaxPool2d(2), nn.Dropout2d(0.25),
 
+        nn.Conv2d(128, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+        nn.Conv2d(256, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+        nn.MaxPool2d(2), nn.Dropout2d(0.25),
+
+        nn.Conv2d(256, 512, 3, padding=1), nn.BatchNorm2d(512), nn.ReLU(),
+    )
+```
+
+* ფუნდამენტურად იგივეა, რაც `SimpleCNN` უბრალოდ ყველაფერი აქვს უფრო მეტი. ვნახოთ ეს როგორ იმუშავებს. MLP Layer არ შემიცვლია და იგივე დავტოვე, როგორიც `SimpleCNN`-ში გვქონდა:
+
+![alt text](./images/deepcnn.png)
+
+მართალი ყოფილა ის ფაქტი, რომ scaling შველის. თითქმის 60% გახდა ვალიდაციის accuracy.
 
 
  
