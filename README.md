@@ -338,6 +338,13 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 
 ![alt text](./images/cnn_dropout_vs_nodropout.png)
 
+`dropout_p = 0.5`-მა აშკარად უკეთესი შედეგი მოგვცა და ოდნავ გაუმჯობესდა ჩვენი მოდელის performace ვალიდაციაზე.
+
+
+
+
+
+
 
 ## DeepCNN
 
