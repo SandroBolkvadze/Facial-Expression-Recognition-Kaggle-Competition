@@ -476,12 +476,18 @@ class ResBlock(nn.Module):
 
 ყველა run დარეგისტრირებულია:
 
-https://wandb.ai/sbolk23-free-university-of-tbilisi-/projects
+* https://wandb.ai/sbolk23-free-university-of-tbilisi-/projects
 
 თითოეულ run-ში დაილოგა:
 - ყველა ჰიპერპარამეტრი
 - Train / Val მეტრიკები
 - დატრენინგებული მოდელის პარამეტრები
+
+## Report
+
+ესეც report-ის ლინკი:
+
+* https://api.wandb.ai/links/sbolk23-free-university-of-tbilisi-/s3qiym0l
 
 ---
 
