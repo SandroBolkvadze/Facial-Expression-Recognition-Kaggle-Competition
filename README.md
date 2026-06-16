@@ -472,15 +472,16 @@ class ResBlock(nn.Module):
 - `DeepResCNN`: `Loss: 1.0381991679177565`; `acc: 61.597399582075695%`.
 
 
-## MLflow ექსპერიმენტები DagsHub-ზე
+## ექსპერიმენტები Wandb-ზე
 
 ყველა run დარეგისტრირებულია:
- [dagshub.com/sbolk23/IEEE-CIS-Fraud-Detection-Kaggle-Competition](https://dagshub.com/sbolk23/IEEE-CIS-Fraud-Detection-Kaggle-Competition.mlflow)
+
+https://wandb.ai/sbolk23-free-university-of-tbilisi-/projects
 
 თითოეულ run-ში დაილოგა:
 - ყველა ჰიპერპარამეტრი
 - Train / Val მეტრიკები
-- დატრენინგებული მოდელის არტეფაქტი (`.pkl`)
+- დატრენინგებული მოდელის პარამეტრები
 
 ---
 
