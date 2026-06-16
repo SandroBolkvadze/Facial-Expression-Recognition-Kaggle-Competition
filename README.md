@@ -289,9 +289,43 @@ MultiLayerFC__bs_64__hs_[512, 512, 256, 128]__activation_ReLU__optimizer_Adam_lr
 # CNN
 
 
+* დავიწყე მარტივი CNN-ის დატრენინგებით. ავიღე ორი ცალი Convolutional Layer-ით:
+
+```python
+    self.conv = nn.Sequential(
+        nn.Conv2d(1, 64, kernel_size=3, padding=1),
+        nn.BatchNorm2d(64),
+        nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2),
+
+        nn.Conv2d(64, 128, kernel_size=3, padding=1),
+        nn.BatchNorm2d(128),
+        nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2),
+    )
+```
+
+თითოეულ Convolutional Layer-ზე pooling-ამდე ვინარჩუნებ შესული სურათის widht და height განზომილებებს. Conv Layer-ში 3x3 კერნელს ვიყენებ და იმისათვის, რომ width და height  არ შეუმცირდეს სურათს 1 ზომის padding-ს ვუმატებ width და height-ზე. ამის შემდეგ ვაკეთებ Batchnorm2d channel-ების გასწვრივ, რათა პიქსელები ნორმალიზებული დავტოვო შემდეგ აქტივაციის ReLU layer-ში შესვლამდე. ბოლოს ვაკეთებ pooling-ს 2x2 კერნელით. თანდათან სურათის width და height მცირდება pooling-ის შემდეგ, მაგრამ channel-ების რაოდენობა იმატებს. ბოლოს უკვე გავაბრტყელე სურათის Conv Layer-ების დამუშავებული feature-ები და შევუშვი MLP-ში: 
+
+```python
+    self.mlp = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(128 * 12 * 12, 256),
+        nn.ReLU(),
+        nn.Linear(256, num_classes),
+    )
+```
+
+* `128 * 12 * 12` იქნება ნეირონების რაოდენობა, რადგან 128 არის channel-ების რაოდენობა, ხოლო 12x12 გახდება სურათი მას შემდეგ, რაც 48x48 სურათი ორჯერ გაივლის 2x2 კერნელის მქონე pooling ლეიერში.
+
+* forward ძალიან მარტივი გამოვიდა:
+```python
+    def forward(self, x):
+        return self.mlp(self.conv(x))
+```
 
 
-
+ეს გავუშვი და ასეთი შედეგი დადო: 
 
 
 
