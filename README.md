@@ -224,16 +224,25 @@ class TwoLayerFC(nn.Module):
 
 * დავიწყე ზედა *sanity check* ნაწილის observation-ების შემოწმებით. გავტესტე შემდეგი ორი მოდელი:
 
-- TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_normal_mean_0_std_1__early_stop_True_patience_50_min_delta_0
+- `TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_normal_mean_0_std_1__early_stop_True_patience_50_min_delta_0`
 
-- TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_xavier_normal__early_stop_True_patience_50_min_delta_0
+- `TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_xavier_normal__early_stop_True_patience_50_min_delta_0`
 
 განსხვავება უბრალოდ იმაშია, რომ ერთ მოდელში `normal_mean_0_std_1` გამოვიყენე ცვლადების ინიციალიზაციისთვის, ხოლო მეორესთვის `xavier_normal` ინიციალიზაცია გამოვიყენე. ორივე აქტივაციის layer-ად ავიღე `Tanh` (ნაცრისფერი მოდელია `xavier_normal`, ხოლო იასამნისფერი - `normal_mean_0_std_1`): 
 
 ![alt text](./tanh_xavier_vs_normal.png)
 
-ამ შედეგიდან ჩანს, რომ `xavier_normal`-ით ინიციალიზებულ მოდელს ბევრად მაღალი წარმადობა აქვს. ანუ, ტრენინგის პროცესი ბევრად უფრო მალე მიდის ასეთ მოდელში - იმდენად მალე, რომ უფრო **overfitted** არის ვიფრე მეორე მოდელი, რომლის წონები `normal_mean_0_std_1`-ით დავაინიციალიზეთ. **overfit** დიდად არ არის გასაკვირი და ამის თავიდან ასაცილებლად სხვა გზების მოცდაა საჭირო. ამით უბრალოდ ის ვაჩვენეთ, რომ ტრენინგის პროცესი ბევრად უფრო *smooth* არის პარამეტრების კარგი ინიციალიზაციის მქონე მოდელისთვის. 
+ამ შედეგიდან ჩანს, რომ `xavier_normal`-ით ინიციალიზებულ მოდელს ბევრად მაღალი წარმადობა აქვს. ანუ, ტრენინგის პროცესი ბევრად უფრო მალე მიდის ასეთ მოდელში - იმდენად მალე, რომ უფრო **overfitted** არის ვიფრე მეორე მოდელი, რომლის წონები `normal_mean_0_std_1`-ით დავაინიციალიზეთ. **overfit** დიდად არ არის გასაკვირი და ამის თავიდან ასაცილებლად სხვა გზების მოცდაა საჭირო, კარგი ინიციალიზაცია ვერ უშველის მაგ ნაწილს. ამით უბრალოდ ის ვაჩვენეთ, რომ ტრენინგის პროცესი ბევრად უფრო *smooth* არის პარამეტრების კარგი ინიციალიზაციის მქონე მოდელისთვის. 
 
+`TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_normal_mean_0_std_1__early_stop_True_patience_50_min_delta_0` -სთვის საუკეთესო შედეგზე გავიდა (`epoch: 7`, `train_loss: 1.4054`; `train_acc: 0.4691`; `val_loss: 1.6273`; `val_acc: 0.3723`)
+
+`TwoLayerFC__bs_64__hs_64__activation_Tanh__optimizer_Adam_lr_0.001_weight_decay_0__weights_init_xavier_normal__early_stop_True_patience_50_min_delta_0` -სთვის საუკეთესო შედეგზე გავიდა (`epoch: 30`, `train_loss: 1.4029`; `train_acc: 0.4715`; `val_loss: 1.8894`; `val_acc: 0.3019`)
+
+ასეთი დაბალი შედეგები იმიტომ არის `train_acc`-ში, რომ ადრინდელი ეპოქის შედეგი დავიმახსოვრეთ. ამ ეპოქის შემდეგ ორივე მოდელი წავიდა **overfit**-ში და ვალიდაციაზე უარესს შედეგს დებდა. ანუ გვჭირდება რაიმე რეგულარიზაციის მექანიზმი.
+
+
+
+* `Tanh` აქტივაცია ხშირ შემთხვევაში პრობლემურია, რადგან backpropagation-ის დროს `Tanh` ლეიერში შესული გრადიენტი მრავლდება (-1, 1) რიცხვზე, რადგან `-1 < dtanh(x)/dx < 1`. შესაბამისად, მოვცადე `ReLU` აქტივაციის გამოყენება. `ReLU`-ს აქტივაციისთვის `kaiming_normal` ინიციალიზაციას იყენებენ - `xavier_normal`-ის მსგავსია, უბრალოდ დამატებით 2-ზე ყოფს მნიშნელს,რადგან `ReLU` ორჯერ ამცრირებს layer-ის ვარიაციას. ასევე, აქვე ვცადე l2 რეგულარიზაციის პარამეტრის `weight_scale`-ის ცვლილება [`1e-6`, `1e-5`, `1e-4`, `1e-3`, `1e-2`, `1e-1`, `0`]. რეგულარიზაციის გარეშე `Tanh`-ზე უკეთესი შედეგი მოგვცა `TwoLayerFC__bs_64__hs_64__activation_ReLU__optimizer_Adam_lr_0001_weight_decay_0__early_stop_True_patience_50_min_delta_0` მოდელმა: (`epoch: 5`, `train_loss: 1.4296`; `train_acc: 0.4530`; `val_loss: 1.5837`; `val_acc: 0.3925`). ანუ `val_loss` შემცირდა და `val_acc` გაიზარდა. რეგულარიზაციით საუკეთესო შედეგი მოგვცა `weight_scale=1e-3`-ის მოდელმა (`epoch: 4`, `train_loss: 1.4705`; `train_acc: 0.4403`; `val_loss: 1.5785`; `val_acc: 0.3955`). `val_loss` და `val_acc` ოდნავ გაუმჯობესდა ამ მოდელების შემთხვევაში.  
 
 
 
